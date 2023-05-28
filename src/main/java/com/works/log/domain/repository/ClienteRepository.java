@@ -1,4 +1,4 @@
-package com.works.log.domain.repossitory;
+package com.works.log.domain.repository;
 
 import java.util.List;
 
