@@ -20,6 +20,7 @@ import com.works.log.api.model.EntregaModel;
 import com.works.log.api.model.input.EntregaInput;
 import com.works.log.domain.model.Entrega;
 import com.works.log.domain.repository.EntregaRepository;
+import com.works.log.domain.service.FinalizacaoEntregaService;
 import com.works.log.domain.service.SolicitacaoEntregaService;
 
 import lombok.AllArgsConstructor;
