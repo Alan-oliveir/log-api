@@ -9,6 +9,7 @@
 - JPA
 - Bean Validation
 - Exception Handler
+- ModelMapper
 
 
 ## Ferramentas utilizadas
