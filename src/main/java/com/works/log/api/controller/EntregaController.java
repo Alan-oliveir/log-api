@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.works.log.api.assembler.EntregaAssembler;
+import com.works.log.api.model.EntregaModel;
+import com.works.log.api.model.input.EntregaInput;
 import com.works.log.domain.model.Entrega;
 import com.works.log.domain.repository.EntregaRepository;
 import com.works.log.domain.service.SolicitacaoEntregaService;
