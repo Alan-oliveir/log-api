@@ -11,14 +11,13 @@
 - Exception Handler
 - ModelMapper
 
-
 ## Ferramentas utilizadas
 - Spring Tool Suite (STS)
 - Postman
 - MySQL 
 
 ## Visão geral do sistema
-O objetivo é construir um pequeno sistema (API REST) para registrar clientes, implementando operações CRUD além de um endpoint para listar todos os clientes cadastrados. 
+O objetivo é construir um pequeno sistema (API REST) para registrar clientes, implementando operações CRUD além de um endpoint para listar todos os clientes cadastrados e operações não CRUD para finalizar entregas. 
 
 ## Modelo de domínio
 ![Image](https://github.com/Alan-oliveir/log-api/blob/main/images/modelo_conceitual_workslog.png)
