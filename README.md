@@ -29,6 +29,3 @@ ___
 ## Agradecimentos e Créditos
 [AlgaWorks](https://www.algaworks.com/)
 ___
-
-# Autor
-Alan de Oliveira Gonçalves - Linkedin: www.linkedin.com/in/alan-de-oliveira-gonçalves-207549258 
