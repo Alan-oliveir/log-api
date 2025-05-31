@@ -15,6 +15,7 @@ const apiRequest = async (url, options = {}) => {
     const defaultOptions = {
         headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
         },
     };
 

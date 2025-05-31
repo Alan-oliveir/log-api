@@ -1,8 +1,9 @@
 -- CLIENTES
-INSERT INTO cliente (id, nome, email, fone) VALUES (1, 'João Silva', 'joao@email.com', '11999999999');
-INSERT INTO cliente (id, nome, email, fone) VALUES (2, 'Maria Souza', 'maria@email.com', '11888888888');
+INSERT INTO cliente (id, nome, email, fone) VALUES
+                                                (1, 'João Silva', 'joao@email.com', '11999999999'),
+                                                (2, 'Maria Souza', 'maria@email.com', '11888888888');
 
--- ENTREGA (status = 'PENDENTE' precisa existir no enum StatusEntrega)
+-- ENTREGAS
 INSERT INTO entrega (
     id, cliente_id, taxa, status, data_pedido,
     destinatario_nome, destinatario_logradouro, destinatario_numero,
@@ -12,6 +13,6 @@ INSERT INTO entrega (
              'Carlos Lima', 'Rua A', '123', 'Apto 45', 'Centro'
          );
 
--- OCORRÊNCIA
+-- OCORRÊNCIAS
 INSERT INTO ocorrencia (id, entrega_id, descricao, data_registro)
-VALUES (1, 1, 'Pacote saiu para entrega.', CURRENT_TIMESTAMP);
+VALUES (1, 1, 'Pedido recebido pelo entregador.', CURRENT_TIMESTAMP);
