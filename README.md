@@ -96,5 +96,3 @@ Acesse: [http://localhost:3000](http://localhost:3000)
 ## Agradecimentos e Créditos
 
 Este projeto foi desenvolvido com base no treinamento oferecido pela [AlgaWorks](https://www.algaworks.com/).
-
----
