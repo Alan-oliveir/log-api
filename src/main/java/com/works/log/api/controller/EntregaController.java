@@ -23,43 +23,75 @@ import com.works.log.domain.repository.EntregaRepository;
 import com.works.log.domain.service.FinalizacaoEntregaService;
 import com.works.log.domain.service.SolicitacaoEntregaService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/entregas")
+@Tag(name = "Entregas", description = "Operações relacionadas ao gerenciamento de entregas")
 public class EntregaController {
-	
+
 	private EntregaRepository entregaRepository;
 	private SolicitacaoEntregaService solicitacaoEntregaService;
 	private FinalizacaoEntregaService finalizacaoEntregaService;
 	private EntregaAssembler entregaAssembler;
-	
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
+	@Operation(summary = "Solicitar nova entrega",
+			description = "Cria uma nova solicitação de entrega no sistema")
+	@ApiResponses({
+			@ApiResponse(responseCode = "201", description = "Entrega solicitada com sucesso"),
+			@ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
+			@ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+	})
 	public EntregaModel solicitar(@Valid @RequestBody EntregaInput entregaInput) {
 		Entrega novaEntrega = entregaAssembler.toEntity(entregaInput);
 		Entrega entregaSolicitada = solicitacaoEntregaService.solicitar(novaEntrega);
-		
+
 		return entregaAssembler.toModel(entregaSolicitada);
 	}
-	
+
 	@PutMapping("/{entregaId}/finalizacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void finalizar(@PathVariable Long entregaId) {
+	@Operation(summary = "Finalizar entrega",
+			description = "Marca uma entrega como finalizada, alterando seu status")
+	@ApiResponses({
+			@ApiResponse(responseCode = "204", description = "Entrega finalizada com sucesso"),
+			@ApiResponse(responseCode = "404", description = "Entrega não encontrada"),
+			@ApiResponse(responseCode = "400", description = "Entrega não pode ser finalizada (status inválido)")
+	})
+	public void finalizar(
+			@Parameter(description = "ID da entrega a ser finalizada", required = true)
+			@PathVariable Long entregaId) {
 		finalizacaoEntregaService.finalizar(entregaId);
 	}
-	
+
 	@GetMapping
+	@Operation(summary = "Listar todas as entregas",
+			description = "Retorna uma lista com todas as entregas cadastradas no sistema")
+	@ApiResponse(responseCode = "200", description = "Lista de entregas retornada com sucesso")
 	public List<EntregaModel> listar() {
 		return entregaAssembler.toCollectionModel(entregaRepository.findAll());
 	}
-	
+
 	@GetMapping("/{entregaId}")
-	public ResponseEntity<EntregaModel> buscar(@PathVariable Long entregaId) {
+	@Operation(summary = "Buscar entrega por ID",
+			description = "Retorna os detalhes de uma entrega específica pelo seu ID")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Entrega encontrada"),
+			@ApiResponse(responseCode = "404", description = "Entrega não encontrada")
+	})
+	public ResponseEntity<EntregaModel> buscar(
+			@Parameter(description = "ID da entrega", required = true)
+			@PathVariable Long entregaId) {
 		return entregaRepository.findById(entregaId)
 				.map(entrega -> ResponseEntity.ok(entregaAssembler.toModel(entrega)))
 				.orElse(ResponseEntity.notFound().build());
 	}
-
 }
