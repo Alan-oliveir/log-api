@@ -1,111 +1,91 @@
-// src/services/api.js
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = 'http://localhost:8080';
 
-// Função auxiliar para tratar erros de API
+// Função genérica para tratar a resposta do fetch
 const handleResponse = async (response) => {
+    const contentType = response.headers.get("Content-Type");
+
     if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(errorMessage || `Erro HTTP: ${response.status}`);
+        let errorMsg = `Erro ${response.status}`;
+        try {
+            if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+                errorMsg = data.message || JSON.stringify(data);
+            } else {
+                errorMsg = await response.text();
+            }
+        } catch (_) {
+            // fallback
+        }
+        throw new Error(errorMsg);
     }
-    return response.json();
+
+    // Tenta parsear JSON se o header indicar JSON
+    if (contentType && contentType.includes("application/json")) {
+        return response.json();
+    }
+
+    return response.text();
 };
 
-// Função auxiliar para fazer requisições
+// Requisição genérica com headers padrão
 const apiRequest = async (url, options = {}) => {
-    const defaultOptions = {
+    const defaultHeaders = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json', // Força JSON na resposta
+    };
+
+    const finalOptions = {
+        ...options,
         headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            ...defaultHeaders,
+            ...options.headers,
         },
     };
 
-    const response = await fetch(`${API_BASE_URL}${url}`, {
-        ...defaultOptions,
-        ...options,
-        headers: {
-            ...defaultOptions.headers,
-            ...options.headers,
-        },
-    });
-
+    const response = await fetch(`${API_BASE_URL}${url}`, finalOptions);
     return handleResponse(response);
 };
 
-// Serviços de Cliente
+// CRUD de clientes
 export const clienteService = {
-    async getAll() {
-        return apiRequest('/clientes');
-    },
-
-    async getById(id) {
-        return apiRequest(`/clientes/${id}`);
-    },
-
-    async create(cliente) {
-        return apiRequest('/clientes', {
-            method: 'POST',
-            body: JSON.stringify(cliente),
-        });
-    },
-
-    async update(id, cliente) {
-        return apiRequest(`/clientes/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(cliente),
-        });
-    },
-
-    async delete(id) {
-        const response = await fetch(`${API_BASE_URL}/clientes/${id}`, {
-            method: 'DELETE',
-        });
-        if (!response.ok) {
-            throw new Error('Erro ao excluir cliente');
-        }
-    },
+    getAll: () => apiRequest('/clientes'),
+    getById: (id) => apiRequest(`/clientes/${id}`),
+    create: (data) => apiRequest('/clientes', {
+        method: 'POST',
+        body: JSON.stringify(data),
+    }),
+    update: (id, data) => apiRequest(`/clientes/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+    }),
+    delete: (id) => apiRequest(`/clientes/${id}`, {
+        method: 'DELETE',
+    }),
 };
 
-// Serviços de Entrega
+// Entregas
 export const entregaService = {
-    async getAll() {
-        return apiRequest('/entregas');
-    },
-
-    async getById(id) {
-        return apiRequest(`/entregas/${id}`);
-    },
-
-    async create(entrega) {
-        return apiRequest('/entregas', {
-            method: 'POST',
-            body: JSON.stringify(entrega),
-        });
-    },
-
-    async finalizar(id) {
-        const response = await fetch(`${API_BASE_URL}/entregas/${id}/finalizacao`, {
-            method: 'PUT',
-        });
-        if (!response.ok) {
-            throw new Error('Erro ao finalizar entrega');
-        }
-    },
+    getAll: () => apiRequest('/entregas'),
+    getById: (id) => apiRequest(`/entregas/${id}`),
+    create: (data) => apiRequest('/entregas', {
+        method: 'POST',
+        body: JSON.stringify(data),
+    }),
+    finalizar: (id) => apiRequest(`/entregas/${id}/finalizacao`, {
+        method: 'PUT',
+    }),
 };
 
-// Serviços de Ocorrência
+// Ocorrências
 export const ocorrenciaService = {
-    async getByEntregaId(entregaId) {
-        return apiRequest(`/entregas/${entregaId}/ocorrencias`);
-    },
-
-    async create(entregaId, descricao) {
-        return apiRequest(`/entregas/${entregaId}/ocorrencias`, {
-            method: 'POST',
-            body: JSON.stringify({ descricao }),
-        });
-    },
+    getByEntregaId: (entregaId) => apiRequest(`/entregas/${entregaId}/ocorrencias`),
+    create: (entregaId, descricao) => apiRequest(`/entregas/${entregaId}/ocorrencias`, {
+        method: 'POST',
+        body: JSON.stringify({ descricao }),
+    }),
 };
 
+// Exporta todos os serviços agrupados se quiser usar como `api.entrega.getAll()` etc.
 const api = {
     cliente: clienteService,
     entrega: entregaService,
