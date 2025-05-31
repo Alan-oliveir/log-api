@@ -105,8 +105,10 @@ export const ocorrenciaService = {
     },
 };
 
-export default {
+const api = {
     cliente: clienteService,
     entrega: entregaService,
     ocorrencia: ocorrenciaService,
 };
+
+export default api;
